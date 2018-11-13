@@ -24,5 +24,4 @@ urlpatterns = [
     path('push', views.push_to_client),
     path('login', views.login),
     path('get_report', views.get_report),
-    path('test', views.test),
 ]
