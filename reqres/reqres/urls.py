@@ -19,5 +19,10 @@ from flow import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.home),
+    path('', views.get_report),
+    # path('alert', views.alert),
+    path('push', views.push_to_client),
+    path('login', views.login),
+    path('get_report', views.get_report),
+    path('test', views.test),
 ]
