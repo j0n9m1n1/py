@@ -37,12 +37,10 @@ curl -X POST -d "lms_id=hacker&lms_pw=zxcvb1@345&token=fEvEG-MHuzo:APA91bFJxPStY
 # @csrf_exempt
 # def test(request):
 # 	start_time = time.time()	
-# 	# # Pool(processes=12)
-# 	# p = Pool(get_report, request, processes=12)
-# 	# # p.start()
-# 	# # pool.map(Pool)
-# 	# p.join()
+# 	p = Pool(4)
+# 	p.map(get_report, request)
 # 	print("(def test) done --- %s seconds ---" % (time.time() - start_time))
+# 	return HttpResponse("SUCCESS")
 @csrf_exempt
 def login(request):
 	start_time = time.time()
