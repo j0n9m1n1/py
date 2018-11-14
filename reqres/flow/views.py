@@ -238,13 +238,13 @@ def get_report(request):
 			for i in range(len(list_reports_detail)):
 
 				report = '과제 ' + str(0)
-				dict_report[class_name[i]].append({report : ' '})
+				dict_report[class_name[i]] = ({report : ' '})
 
 				for j in range(int(len(list_reports_detail[i])/6)):
 
 					report = '과제 ' + str(j)
 					# 얘네들 list로 넘길지 말지 고민된다
-					dict_report[class_name[i]][0][report] = [{
+					dict_report[class_name[i]][report] = ({
 
 						'과제명' :   list_reports_detail[i][(j * 6 + 1) - 1],
 						'제출방식' : list_reports_detail[i][(j * 6 + 2) - 1],
@@ -252,7 +252,7 @@ def get_report(request):
 						'마감일'  :  list_reports_detail[i][(j * 6 + 4) - 1],
 						'지각제출' : list_reports_detail[i][(j * 6 + 5) - 1],
 						'과제내용' : list_reports_detail[i][(j * 6 + 6) - 1],
-														    }]
+														    })
 			# print(json.dumps(dict_report, indent = 4, ensure_ascii=False))
 
 			#첫번째 인덱스에 과목명 너흠

@@ -38,5 +38,5 @@ print(json.dumps(dict_report, indent = 4, ensure_ascii=False))
 
 # JSONObject jsonObject2 = jsonObejct.getJSONObject((String) subject.next) #과목에 대한 object -> 과제 
 # Iterator keys2 = jsonObject2.keys(); #과제 0 ~ N
-
-print("TEST")
+test_str = "strqwqweqwe"
+print(type(test_str))
