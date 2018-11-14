@@ -11,7 +11,7 @@ import collections
 			dict_report_late['지각제출']
 			dict_report_content['과제내용']
 
-'''
+
 dict_report = defaultdict(list)
 
 for i in range(0, 3):
@@ -32,3 +32,9 @@ dict_report['과목명 1'][0]['과제2'] = {'과제명' : 'X', '제출방식' : 
 # dict_subject['subject']['과목'] = test1
 
 print(json.dumps(dict_report, indent = 4, ensure_ascii=False))
+'''
+# JSONObject jsonObject = new JSONObject(response);
+# Iterator subject = jsonObject.keys(); #과목명임
+
+# JSONObject jsonObject2 = jsonObejct.getJSONObject((String) subject.next) #과목에 대한 object -> 과제 
+# Iterator keys2 = jsonObject2.keys(); #과제 0 ~ N

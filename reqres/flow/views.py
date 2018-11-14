@@ -11,8 +11,12 @@ import django
 import os
 import pprint
 import ast
+from multiprocessing import Pool
+import time
+
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "websaver.settings")
 django.setup()
+
 
 #LMS URL LIST
 lms = 'https://lms.sunmoon.ac.kr'
@@ -24,13 +28,25 @@ submain_form     = 'https://lms.sunmoon.ac.kr/ilos/st/course/submain_form.acl'
 notice_list_form = 'https://lms.sunmoon.ac.kr/ilos/st/course/notice_list_form.acl'
 report_list_form = 'https://lms.sunmoon.ac.kr/ilos/st/course/report_list_form.acl'
 exam_list_form   = 'https://lms.sunmoon.ac.kr/ilos/st/course/test_list_form.acl'
+
+
 '''
 curl -X POST -d "lms_id=hacker&lms_pw=zxcvb1@345&token=fEvEG-MHuzo:APA91bFJxPStY8uJm7lmDVPBUKBE01SQJNm_IejCEL0cgXknPngtKG9-ZhXFQXf5q5B2JaGiryKiepL-23QfQV41pGkLpufiVBPX_jhyC4l548I_W9midckurcHLoT0f9lHHNnhdRC-J" http://localhost/get_report
 '''
 #주석 안쓰고 두달만 지나도 전~부 까먹을테니까 써놓자
+# @csrf_exempt
+# def test(request):
+# 	start_time = time.time()	
+# 	# # Pool(processes=12)
+# 	# p = Pool(get_report, request, processes=12)
+# 	# # p.start()
+# 	# # pool.map(Pool)
+# 	# p.join()
+# 	print("(def test) done --- %s seconds ---" % (time.time() - start_time))
 @csrf_exempt
 def login(request):
-	
+	start_time = time.time()
+	print("(def) login fail --- %s seconds ---" % (time.time() - start_time))
 	if request.method == 'GET':
 		return HttpResponse("<h1>(def login)only POST</h1>")
 	
@@ -72,20 +88,23 @@ def login(request):
 					#id, token을 insert에 넣고
 					insert = UserData(lms_id = lms_id, device_token = token)
 					insert.save()
-					print("(def login)inserted id, token")
+					
+					# print("(def login)inserted id, token")
 					#과제 목록 불러오기
-
+				print("(def login) success-- %s seconds ---" % (time.time() - start_time))
 				return HttpResponse(1)
 			#로그인 실패(error : true = fail)
 			else:
-				print("(def login)login fail")
+				# print("(def login)login fail")
 				#loginCheck = True
+				print("(def login) fail --- %s seconds ---" % (time.time() - start_time))
 				return HttpResponse(0)
 	# return HttpResponse("LOGIN:0")			
 
 @csrf_exempt
 def get_report(request):
-
+	start_time = time.time()
+	
 	lms_id = request.POST.get('lms_id', '')
 	lms_pw = request.POST.get('lms_pw', '')
 	
@@ -161,11 +180,11 @@ def get_report(request):
 				for tag in report_info:
 					temp_str = str(tag.text)
 
-					if "조회할 자료가 없습니다" in temp_str:
-						print("과제없음")
-
-					else:
+					if "조회할 자료가 없습니다" not in temp_str:
 						list_temp_report.append(" ".join((temp_str.replace("\n", "").strip().split())))
+
+					# else:
+						
 
 				list_urls = []
 
@@ -226,8 +245,8 @@ def get_report(request):
 				for j in range(int(len(list_reports_detail[i])/6)):
 
 					report = '과제 ' + str(j)
-
-					dict_report[class_name[i]][0][report] = {
+					# 얘네들 list로 넘길지 말지 고민된다
+					dict_report[class_name[i]][0][report] = [{
 
 						'과제명' :   list_reports_detail[i][(j * 6 + 1) - 1],
 						'제출방식' : list_reports_detail[i][(j * 6 + 2) - 1],
@@ -235,7 +254,8 @@ def get_report(request):
 						'마감일'  :  list_reports_detail[i][(j * 6 + 4) - 1],
 						'지각제출' : list_reports_detail[i][(j * 6 + 5) - 1],
 						'과제내용' : list_reports_detail[i][(j * 6 + 6) - 1],
-														    }
+														    }]
+			# print(json.dumps(dict_report, indent = 4, ensure_ascii=False))
 
 			#첫번째 인덱스에 과목명 너흠
 			for name in class_name:
@@ -252,12 +272,16 @@ def get_report(request):
 				remove_last = list_reports_title[i].count(0)
 				for j in range(0, remove_last):
 					list_reports_title[i].remove(0)
-
+			
+			# dict_report = (json.dumps(dict_report, ensure_ascii = False))
+			print("(def get_report) done --- %s seconds ---" % (time.time() - start_time))
+			print(json.dumps(dict_report, indent = 4, ensure_ascii = False))
+			prepare_report(lms_id, list_reports_all, list_reports_title, usr_class_length)
 			return JsonResponse(dict_report, safe = False, json_dumps_params = {'ensure_ascii': False})
 			
 @csrf_exempt
 def prepare_report(lms_id, list_reports_all, list_reports_title, usr_class_length):
-
+	start_time = time.time()
 	list_new_subjects  = []
 	list_old_subjects  = []
 	list_diff_subjects = []
@@ -323,6 +347,7 @@ def prepare_report(lms_id, list_reports_all, list_reports_title, usr_class_lengt
 		print("(def prepare_report)NULL SAVED old_reports")
 
 	#NULL일때(첫 로그인시)는 list_diff_에 들어가지 않음
+	print("(def prepare_report) done --- %s seconds ---" % (time.time() - start_time))
 	if len(list_diff_subjects) > 0:
 		push_to_client(lms_id, list_diff_subjects, list_diff_reports)
 
