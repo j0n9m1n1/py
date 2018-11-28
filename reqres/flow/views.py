@@ -236,12 +236,10 @@ def get_report(request):
 			dict_report = defaultdict(list)
 
 			for i in range(len(list_reports_detail)):
-
 				report = '과제 ' + str(0)
 				dict_report[class_name[i]] = ({report : ' '})
 
 				for j in range(int(len(list_reports_detail[i])/6)):
-
 					report = '과제 ' + str(j)
 					# 얘네들 list로 넘길지 말지 고민된다
 					dict_report[class_name[i]][report] = ({
@@ -273,7 +271,7 @@ def get_report(request):
 			
 			# dict_report = (json.dumps(dict_report, ensure_ascii = False))
 			print("(def get_report) done --- %s seconds ---" % (time.time() - start_time))
-			print(json.dumps(dict_report, indent = 4, ensure_ascii = False))
+			# print(json.dumps(dict_report, indent = 4, ensure_ascii = False))
 			prepare_report(lms_id, list_reports_all, list_reports_title, usr_class_length)
 			return JsonResponse(dict_report, safe = False, json_dumps_params = {'ensure_ascii': False})
 			
@@ -357,6 +355,8 @@ def push_to_client(lms_id, list_diff_subjects, list_diff_reports):
 
 	userdata = UserData.objects.get(lms_id = lms_id)
 	token = userdata.device_token
+	list_recent_push = []
+
     # fcm 푸시 메세지 요청 주소
 	url = 'https://fcm.googleapis.com/fcm/send'    
 	headers = {
@@ -367,10 +367,57 @@ def push_to_client(lms_id, list_diff_subjects, list_diff_reports):
     # 한명 지정이면 to, 여럿일 경우 registration_ids[]
 	if len(list_diff_subjects) > 0:
 		for i in range(int(len(list_diff_subjects) / 2)):
+
+			list_recent_push = ast.literal_eval(userdata.recent_push)
+			# print("list_recent: ", list_recent_push)
+			list_recent_push.insert(0, list_diff_subjects[i+1])
+			list_recent_push.insert(0, list_diff_subjects[i])
+			# print("list_recent: ", list_recent_push)
+			userdata.recent_push = list_recent_push
+			userdata.save(update_fields=['recent_push'])
+			userdata.save()
 			content ={'to': token, 'notification': { 'title': list_diff_subjects[i], 'body': list_diff_subjects[i+1]}}
 			push_req = requests.post(url, data=json.dumps(content), headers=headers)
 
 	if len(list_diff_reports) > 0:
 		for i in range(int(len(list_diff_reports) / 2)):
+			list_recent_push = ast.literal_eval(userdata.recent_push)
+			# print("list_recent: ", list_recent_push)
+			list_recent_push.insert(0, list_diff_reports[i+1])
+			list_recent_push.insert(0, list_diff_reports[i])
+			# print("list_recent: ", list_recent_push)
+			userdata.recent_push = list_recent_push
+			userdata.save(update_fields=['recent_push'])
+			userdata.save()
+			
 			content ={'to': token, 'notification': { 'title': list_diff_reports[i], 'body': list_diff_reports[i+1]}}
 			push_req = requests.post(url, data=json.dumps(content), headers=headers)
+			# print("recent: ", userdata.recent_push)
+
+@csrf_exempt
+def get_recent_push(request):
+	print("get_recent_push")
+	list_recent_push = []
+	lms_id = request.POST.get('lms_id', '')
+	userdata = UserData.objects.get(lms_id = lms_id)
+	list_recent_push = ast.literal_eval(userdata.recent_push)
+
+	dict_recent_push = defaultdict(list)
+
+	'''
+	0 2 4 6 8 
+	1 3 5 7 9
+
+	'''
+	for i in range(int(len(list_recent_push) / 2)):
+		title = "제목 " + str(i)
+		body = "내용 " + str(i)
+		dict_recent_push[title] = list_recent_push[i*2]
+		dict_recent_push[body] = list_recent_push[i*2+1]
+		
+	
+	print(json.dumps(dict_recent_push, indent = 4, ensure_ascii=False))
+	# print(list_recent_push)
+	print("end get_recent_push")
+	return JsonResponse(dict_recent_push, safe = False, json_dumps_params = {'ensure_ascii': False})
+	

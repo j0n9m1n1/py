@@ -24,5 +24,5 @@ urlpatterns = [
     path('push', views.push_to_client),
     path('login', views.login),
     path('get_report', views.get_report),
-    # path('test', views.test),
+    path('get_recent_push', views.get_recent_push),
 ]
