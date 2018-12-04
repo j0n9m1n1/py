@@ -17,7 +17,6 @@ import time
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "websaver.settings")
 django.setup()
 
-
 #LMS URL LIST
 lms = 'https://lms.sunmoon.ac.kr'
 loginURL         = 'http://lms.sunmoon.ac.kr/ilos/lo/login.acl'
@@ -29,24 +28,13 @@ notice_list_form = 'https://lms.sunmoon.ac.kr/ilos/st/course/notice_list_form.ac
 report_list_form = 'https://lms.sunmoon.ac.kr/ilos/st/course/report_list_form.acl'
 exam_list_form   = 'https://lms.sunmoon.ac.kr/ilos/st/course/test_list_form.acl'
 
-
-'''
-curl -X POST -d "lms_id=hacker&lms_pw=zxcvb1@345&token=fEvEG-MHuzo:APA91bFJxPStY8uJm7lmDVPBUKBE01SQJNm_IejCEL0cgXknPngtKG9-ZhXFQXf5q5B2JaGiryKiepL-23QfQV41pGkLpufiVBPX_jhyC4l548I_W9midckurcHLoT0f9lHHNnhdRC-J" http://localhost/get_report
-'''
-#주석 안쓰고 두달만 지나도 전~부 까먹을테니까 써놓자
-# @csrf_exempt
-# def test(request):
-# 	start_time = time.time()	
-# 	p = Pool(4)
-# 	p.map(get_report, request)
-# 	print("(def test) done --- %s seconds ---" % (time.time() - start_time))
-# 	return HttpResponse("SUCCESS")
 @csrf_exempt
 def login(request):
-	start_time = time.time()
-	print("(def) login fail --- %s seconds ---" % (time.time() - start_time))
+	
+	print("(def) login failed")
+
 	if request.method == 'GET':
-		return HttpResponse("<h1>(def login)only POST</h1>")
+		return HttpResponse("<h1>plz</h1>")
 	
 	elif request.method == 'POST':
 
@@ -54,7 +42,7 @@ def login(request):
 		lms_pw = request.POST.get('lms_pw', '')
 		token = request.POST.get('token', '')
 		#요청온 lms_id 조회
-		print("(def login)id:", lms_id,"pw:", lms_pw)
+		
 		check_id = UserData.objects.filter(lms_id=lms_id)
 
 		if lms_id and lms_pw and token:
@@ -74,12 +62,11 @@ def login(request):
 						userdata.save()
 						print("(def login)saved token")
 						print("(def login)call get_report")
-						# get_report(lms_id, lms_pw)
+						
 					#과제 목록 불러오기
 					else:
 						print("(def login)call get_report")
-						# get_report(lms_id, lms_pw)
-
+						
 				#db에 lms_id가 없으면
 				else:
 					print('(def login)id not in db')
@@ -87,20 +74,18 @@ def login(request):
 					insert = UserData(lms_id = lms_id, device_token = token)
 					insert.save()
 					
-					# print("(def login)inserted id, token")
 					#과제 목록 불러오기
-				print("(def login) success-- %s seconds ---" % (time.time() - start_time))
+				print("(def login) success")
 				return HttpResponse(1)
 			#로그인 실패(error : true = fail)
 			else:
-				# print("(def login)login fail")
-				#loginCheck = True
-				print("(def login) fail --- %s seconds ---" % (time.time() - start_time))
+				print("(def login) fail")
 				return HttpResponse(0)
 	# return HttpResponse("LOGIN:0")			
 
 @csrf_exempt
 def get_report(request):
+
 	start_time = time.time()
 	
 	lms_id = request.POST.get('lms_id', '')
@@ -114,7 +99,6 @@ def get_report(request):
 
 		#로그인 요청
 		login_req = s.post(loginURL, data = {'usr_id': lms_id,	'usr_pwd': lms_pw})
-		#로그인 인증
 
 		#로그인 실패
 		if "true" in login_req.text: 
@@ -129,16 +113,13 @@ def get_report(request):
 			soup_mainBody = bs(main_req.text, 'html.parser')
 			opened_class = soup_mainBody.select('em.sub_open')
 
-			#태그에서 과목명 얻어냄
-			for TAG in opened_class:
-				temp_str = str(TAG.text)
-				class_name.append(" ".join((temp_str.replace("\n", "").strip().split())))
-
-			#태그에서 과목 코드만 얻어냄
+			#태그에서 과목명, 과목 코드 얻어냄
 			for TAG in opened_class:
 				first = 0
 				last = 0
 				temp_code = str(TAG)
+				temp_str = str(TAG.text)
+				class_name.append(" ".join((temp_str.replace("\n", "").strip().split())))
 
 				for i in range(0, len(temp_code)):
 					if temp_code[i] == "'":
@@ -147,20 +128,13 @@ def get_report(request):
 
 						elif first == 0:
 							first = i + 1
-
 				class_code.append(temp_code[first:last])
-			
+
 			usr_class_length = len(class_code)
-			list_reports_all = [[0] * 20 for i in range(usr_class_length)]
-			list_reports_title = [[0] * 20 for i in range(usr_class_length)]
 			list_reports_detail = [[] for i in range(usr_class_length)]
 			list_temp_report = []
-
-			last_report_length = 1
-			subject_cnt = 0
-			report_cnt = 0
-
 			length = 0
+
 			for code in class_code:
 				
 				#먼저 eclass_room 세션을 가져와야 조회 가능
@@ -175,31 +149,26 @@ def get_report(request):
 				soup_report = bs(report_req.text, 'html.parser')
 				report_info = soup_report.select('tr > td')
 
-				for tag in report_info:
-					temp_str = str(tag.text)
-
-					if "조회할 자료가 없습니다" not in temp_str:
-						list_temp_report.append(" ".join((temp_str.replace("\n", "").strip().split())))
-
-					# else:
-						
-
 				list_urls = []
 
 				for TAG in report_info:
 					first = 0
 					last = 0
-					temp_str = str(TAG)
+					temp_str = str(TAG.text)
+					temp_url = str(TAG)
 
-					if "site-link" in temp_str:
+					if "조회할 자료가 없습니다" not in temp_str:
+						list_temp_report.append(" ".join((temp_str.replace("\n", "").strip().split())))
+
+					if "site-link" in temp_url:
 						# url index in tag : first = 44, last = 95
-						for i in range(len(temp_str)):
-							if temp_str[i] == "/" and first == 0:
+						for i in range(len(temp_url)):
+							if temp_url[i] == "/" and first == 0:
 								first = i
-							elif temp_str[i] == '&' and last == 0:
+							elif temp_url[i] == '&' and last == 0:
 								last = i
-						list_urls.append(temp_str[first:last])	
-				
+						list_urls.append(temp_url[first:last])
+
 				for i in range(len(list_urls)):
 
 					inside_report = s.post(lms+list_urls[i])
@@ -209,39 +178,20 @@ def get_report(request):
 					for j in range(0, 6):
 						list_reports_detail[length].append(" ".join((detail_report_info[j].text.replace("\n", "").strip().split())))
 				
-				for i in range(last_report_length, len(list_temp_report) + 1):
-					temp_str = temp_str + list_temp_report[i - 1] + " "
-
-					if i % 7 == 0:
-						list_reports_all[subject_cnt][report_cnt] = temp_str
-						temp_str = ""
-						
-					elif i % 7 == 1:
-						list_reports_title[subject_cnt][report_cnt] = list_temp_report[i]
-						report_cnt = report_cnt + 1
-
-				report_cnt = 0
-				subject_cnt = subject_cnt + 1
 				length += 1	
-				last_report_length = len(list_temp_report) + 1
 
-			
-			l = 0
+			dict_report = defaultdict(list)
 
 			for i in range(len(list_reports_detail)):
 				if len(list_reports_detail[i]) < 1:
 					for j in range(0, 6):
 						list_reports_detail[i].append("과제없음")
-	
-			dict_report = defaultdict(list)
 
-			for i in range(len(list_reports_detail)):
 				report = '과제 ' + str(0)
 				dict_report[class_name[i]] = ({report : ' '})
 
 				for j in range(int(len(list_reports_detail[i])/6)):
 					report = '과제 ' + str(j)
-					# 얘네들 list로 넘길지 말지 고민된다
 					dict_report[class_name[i]][report] = ({
 
 						'과제명' :   list_reports_detail[i][(j * 6 + 1) - 1],
@@ -252,32 +202,14 @@ def get_report(request):
 						'과제내용' : list_reports_detail[i][(j * 6 + 6) - 1],
 														    })
 			# print(json.dumps(dict_report, indent = 4, ensure_ascii=False))
-
-			#첫번째 인덱스에 과목명 너흠
-			for name in class_name:
-				list_reports_all[l].insert(0, name)
-				l = l + 1
-
-			#list 빈 공간(0) 지우기
-			for i in range(len(list_reports_all)):
-				remove_last = list_reports_all[i].count(0)
-				for j in range(0, remove_last):
-					list_reports_all[i].remove(0)
-
-			for i in range(len(list_reports_title)):
-				remove_last = list_reports_title[i].count(0)
-				for j in range(0, remove_last):
-					list_reports_title[i].remove(0)
 			
-			# dict_report = (json.dumps(dict_report, ensure_ascii = False))
 			print("(def get_report) done --- %s seconds ---" % (time.time() - start_time))
-			# print(json.dumps(dict_report, indent = 4, ensure_ascii = False))
-			prepare_report(lms_id, list_reports_all, list_reports_title, usr_class_length)
+			prepare_report(lms_id, dict_report, class_name, usr_class_length)
 			return JsonResponse(dict_report, safe = False, json_dumps_params = {'ensure_ascii': False})
 			
 @csrf_exempt
-def prepare_report(lms_id, list_reports_all, list_reports_title, usr_class_length):
-	start_time = time.time()
+def prepare_report(lms_id, dict_report, class_name, usr_class_length):
+	
 	list_new_subjects  = []
 	list_old_subjects  = []
 	list_diff_subjects = []
@@ -287,13 +219,12 @@ def prepare_report(lms_id, list_reports_all, list_reports_title, usr_class_lengt
 
 	#list_subjects, reports에 최근에 가져온 과목, 과제들 append
 	for i in range(usr_class_length):	
-		list_new_subjects.append(list_reports_all[i][0])
+		list_new_subjects.append(class_name[i])
 
-		if len(list_reports_title[i]) > 0:
-			list_new_reports.append(list_reports_title[i][0])	
+		if len(dict_report[class_name[i]]["과제 0"]["과제명"]) > 0:
+			list_new_reports.append(dict_report[class_name[i]]["과제 0"]["과제명"])	
 		else:
 			list_new_reports.append("자료없음")
-			# reports_all[i].insert(1, "자료없음")
 
 	# 'SELECT....WHERE lms_id = "hacker" then 컬럼 userdata로 접근가능
 	userdata = UserData.objects.get(lms_id = lms_id)
@@ -306,13 +237,11 @@ def prepare_report(lms_id, list_reports_all, list_reports_title, usr_class_lengt
 		for i in range(len(list_new_subjects)):
 			#old, new subjects 같을때
 			if list_old_subjects[i] == list_new_subjects[i]:
-				# print(list_old_subjects[i] , "|", list_new_subjects[i])
 				print("같음")
 			#old, new subjects 다를때
 			else:
 				list_diff_subjects.append(list_old_subjects[i])
 				list_diff_subjects.append(list_new_subjects[i])
-				# print(list_old_subjects[i] , "|", list_new_subjects[i])
 				print("다름")
 
 	if list_old_subjects != list_new_subjects:
@@ -322,18 +251,17 @@ def prepare_report(lms_id, list_reports_all, list_reports_title, usr_class_lengt
 		print("(def prepare_report)NULL SAVED old_subjects")
 
 	if userdata.old_reports != 'null':
+		print("userdata.old_reports : ", userdata.old_reports)
 		list_old_reports = ast.literal_eval(userdata.old_reports)
 
 		for i in range(len(list_new_reports)):
 
 			if list_old_reports[i] == list_new_reports[i]:
-				# print(list_old_reports[i] , "|", list_new_reports[i])
 				print("같음")
 
 			else:
 				list_diff_reports.append(list_new_subjects[i])
 				list_diff_reports.append(list_new_reports[i])
-				# print(list_old_reports[i] , "|", list_new_reports[i])
 				print("다름")
 
 	if list_old_reports != list_new_reports:
@@ -364,39 +292,39 @@ def push_to_client(lms_id, list_diff_subjects, list_diff_reports):
         'Content-Type': 'application/json; UTF-8',
 	}
 
-    # 한명 지정이면 to, 여럿일 경우 registration_ids[]
+	 # 한명 지정이면 to, 여럿일 경우 registration_ids[]
 	if len(list_diff_subjects) > 0:
 		for i in range(int(len(list_diff_subjects) / 2)):
-
 			list_recent_push = ast.literal_eval(userdata.recent_push)
-			# print("list_recent: ", list_recent_push)
+
 			list_recent_push.insert(0, list_diff_subjects[i+1])
 			list_recent_push.insert(0, list_diff_subjects[i])
-			# print("list_recent: ", list_recent_push)
+
 			userdata.recent_push = list_recent_push
 			userdata.save(update_fields=['recent_push'])
 			userdata.save()
-			content ={'to': token, 'notification': { 'title': list_diff_subjects[i], 'body': list_diff_subjects[i+1]}}
+
+			content = {'to': token, 'notification': { 'title': list_diff_subjects[i], 'body': list_diff_subjects[i+1]}}
 			push_req = requests.post(url, data=json.dumps(content), headers=headers)
 
 	if len(list_diff_reports) > 0:
 		for i in range(int(len(list_diff_reports) / 2)):
 			list_recent_push = ast.literal_eval(userdata.recent_push)
-			# print("list_recent: ", list_recent_push)
+
 			list_recent_push.insert(0, list_diff_reports[i+1])
 			list_recent_push.insert(0, list_diff_reports[i])
-			# print("list_recent: ", list_recent_push)
+
 			userdata.recent_push = list_recent_push
 			userdata.save(update_fields=['recent_push'])
 			userdata.save()
 			
 			content ={'to': token, 'notification': { 'title': list_diff_reports[i], 'body': list_diff_reports[i+1]}}
 			push_req = requests.post(url, data=json.dumps(content), headers=headers)
-			# print("recent: ", userdata.recent_push)
 
 @csrf_exempt
 def get_recent_push(request):
-	print("get_recent_push")
+	print("def(get_recent_push) start")
+
 	list_recent_push = []
 	lms_id = request.POST.get('lms_id', '')
 	userdata = UserData.objects.get(lms_id = lms_id)
@@ -404,20 +332,13 @@ def get_recent_push(request):
 
 	dict_recent_push = defaultdict(list)
 
-	'''
-	0 2 4 6 8 
-	1 3 5 7 9
-
-	'''
 	for i in range(int(len(list_recent_push) / 2)):
 		title = "제목 " + str(i)
 		body = "내용 " + str(i)
+
 		dict_recent_push[title] = list_recent_push[i*2]
 		dict_recent_push[body] = list_recent_push[i*2+1]
-		
 	
-	print(json.dumps(dict_recent_push, indent = 4, ensure_ascii=False))
-	# print(list_recent_push)
-	print("end get_recent_push")
+	print("def(get_recent_push) done")
 	return JsonResponse(dict_recent_push, safe = False, json_dumps_params = {'ensure_ascii': False})
 	
