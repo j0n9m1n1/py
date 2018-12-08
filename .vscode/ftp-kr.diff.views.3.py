@@ -16,10 +16,7 @@ import time
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "websaver.settings")
 django.setup()
-'''
-start_time = time.time() 
-print("--- %s seconds ---" %(time.time() - start_time))
-'''
+
 #LMS URL LIST
 lms = 'https://lms.sunmoon.ac.kr'
 loginURL         = 'http://lms.sunmoon.ac.kr/ilos/lo/login.acl'
@@ -30,10 +27,7 @@ submain_form     = 'https://lms.sunmoon.ac.kr/ilos/st/course/submain_form.acl'
 notice_list_form = 'https://lms.sunmoon.ac.kr/ilos/st/course/notice_list_form.acl'
 report_list_form = 'https://lms.sunmoon.ac.kr/ilos/st/course/report_list_form.acl'
 exam_list_form   = 'https://lms.sunmoon.ac.kr/ilos/st/course/test_list_form.acl'
-# @csrf_exempt
-# def ptest(request):
-# 	p = Pool(1)
-# 	p.map(get_report, request) 
+
 @csrf_exempt
 def login(request):
 	
@@ -93,11 +87,9 @@ def login(request):
 def get_report(request):
 
 	start_time = time.time()
-	#status = 0 : app foregroud
-	#status = 1 : app backgroud
+	
 	lms_id = request.POST.get('lms_id', '')
 	lms_pw = request.POST.get('lms_pw', '')
-	status = request.POST.get('status', '')
 	
 	with requests.Session() as s:
 
@@ -142,7 +134,7 @@ def get_report(request):
 			list_reports_detail = [[] for i in range(usr_class_length)]
 			list_temp_report = []
 			length = 0
-			
+
 			for code in class_code:
 				
 				#먼저 eclass_room 세션을 가져와야 조회 가능
@@ -175,13 +167,10 @@ def get_report(request):
 								first = i
 							elif temp_url[i] == '&' and last == 0:
 								last = i
-						
 						list_urls.append(temp_url[first:last])
 
-				 
-						
 				for i in range(len(list_urls)):
-					
+
 					inside_report = s.post(lms+list_urls[i])
 					soup_inside_report = bs(inside_report.text, 'html.parser')
 					detail_report_info = soup_inside_report.select('tbody > tr > td')
@@ -190,9 +179,9 @@ def get_report(request):
 						list_reports_detail[length].append(" ".join((detail_report_info[j].text.replace("\n", "").strip().split())))
 				
 				length += 1	
-			
+
 			dict_report = defaultdict(list)
-			
+
 			for i in range(len(list_reports_detail)):
 				if len(list_reports_detail[i]) < 1:
 					for j in range(0, 6):
@@ -213,12 +202,13 @@ def get_report(request):
 						'과제내용' : list_reports_detail[i][(j * 6 + 6) - 1],
 														    })
 			# print(json.dumps(dict_report, indent = 4, ensure_ascii=False))
+			
 			print("(def get_report) done")
-			prepare_report(lms_id, dict_report, class_name, usr_class_length, status)
+			prepare_report(lms_id, dict_report, class_name, usr_class_length)
 			return JsonResponse(dict_report, safe = False, json_dumps_params = {'ensure_ascii': False})
 			
 @csrf_exempt
-def prepare_report(lms_id, dict_report, class_name, usr_class_length, status):
+def prepare_report(lms_id, dict_report, class_name, usr_class_length):
 	
 	list_new_subjects  = []
 	list_old_subjects  = []
@@ -261,6 +251,7 @@ def prepare_report(lms_id, dict_report, class_name, usr_class_length, status):
 		print("(def prepare_report)NULL SAVED old_subjects")
 
 	if userdata.old_reports != 'null':
+		print("userdata.old_reports : ", userdata.old_reports)
 		list_old_reports = ast.literal_eval(userdata.old_reports)
 
 		for i in range(len(list_new_reports)):
@@ -278,17 +269,17 @@ def prepare_report(lms_id, dict_report, class_name, usr_class_length, status):
 		userdata.save(update_fields=['old_reports'])
 		userdata.save()
 		print("(def prepare_report)NULL SAVED old_reports")
-	
+
 	#NULL일때(첫 로그인시)는 list_diff_에 들어가지 않음
 	print("(def prepare_report")
 	if len(list_diff_subjects) > 0:
-		push_to_client(lms_id, list_diff_subjects, list_diff_reports, status)
+		push_to_client(lms_id, list_diff_subjects, list_diff_reports)
 
 	if len(list_diff_reports)  > 0:
-		push_to_client(lms_id, list_diff_subjects, list_diff_reports, status)
+		push_to_client(lms_id, list_diff_subjects, list_diff_reports)
 
 @csrf_exempt
-def push_to_client(lms_id, list_diff_subjects, list_diff_reports, status):
+def push_to_client(lms_id, list_diff_subjects, list_diff_reports):
 
 	userdata = UserData.objects.get(lms_id = lms_id)
 	token = userdata.device_token
@@ -301,8 +292,7 @@ def push_to_client(lms_id, list_diff_subjects, list_diff_reports, status):
         'Content-Type': 'application/json; UTF-8',
 	}
 
-	
-		# 한명 지정이면 to, 여럿일 경우 registration_ids[]
+	 # 한명 지정이면 to, 여럿일 경우 registration_ids[]
 	if len(list_diff_subjects) > 0:
 		for i in range(int(len(list_diff_subjects) / 2)):
 			list_recent_push = ast.literal_eval(userdata.recent_push)
@@ -314,7 +304,7 @@ def push_to_client(lms_id, list_diff_subjects, list_diff_reports, status):
 			userdata.save(update_fields=['recent_push'])
 			userdata.save()
 
-			content = {'to': token, 'data': { 'title': list_diff_subjects[i], 'body': list_diff_subjects[i+1]}}
+			content = {'to': token, 'notification': { 'title': list_diff_subjects[i], 'body': list_diff_subjects[i+1]}}
 			push_req = requests.post(url, data=json.dumps(content), headers=headers)
 
 	if len(list_diff_reports) > 0:
@@ -328,7 +318,7 @@ def push_to_client(lms_id, list_diff_subjects, list_diff_reports, status):
 			userdata.save(update_fields=['recent_push'])
 			userdata.save()
 			
-			content ={'to': token, 'data': { 'title': list_diff_reports[i], 'body': list_diff_reports[i+1]}}
+			content ={'to': token, 'notification': { 'title': list_diff_reports[i], 'body': list_diff_reports[i+1]}}
 			push_req = requests.post(url, data=json.dumps(content), headers=headers)
 
 @csrf_exempt

@@ -1,0 +1,436 @@
+{
+  "sftp://ec2-52-78-239-241.ap-northeast-2.compute.amazonaws.com:22@ubuntu": {
+    ".profile": {
+      "type": "-",
+      "size": 807,
+      "lmtime": 0,
+      "modified": false
+    },
+    ".bash_history": {
+      "type": "-",
+      "size": 238,
+      "lmtime": 0,
+      "modified": false
+    },
+    ".oh-my-zsh": {},
+    ".zshrc": {
+      "type": "-",
+      "size": 3404,
+      "lmtime": 0,
+      "modified": false
+    },
+    ".zcompdump-ip-172-31-20-125-5.4.2": {
+      "type": "-",
+      "size": 42275,
+      "lmtime": 0,
+      "modified": false
+    },
+    ".zsh_history": {
+      "type": "-",
+      "size": 5094,
+      "lmtime": 0,
+      "modified": false
+    },
+    ".zcompdump": {
+      "type": "-",
+      "size": 42275,
+      "lmtime": 0,
+      "modified": false
+    },
+    ".bash_logout": {
+      "type": "-",
+      "size": 220,
+      "lmtime": 0,
+      "modified": false
+    },
+    ".viminfo": {
+      "type": "-",
+      "size": 910,
+      "lmtime": 0,
+      "modified": false
+    },
+    ".gnupg": {},
+    ".sudo_as_admin_successful": {
+      "type": "-",
+      "size": 0,
+      "lmtime": 0,
+      "modified": false
+    },
+    ".local": {},
+    ".cache": {},
+    ".ssh": {},
+    ".bashrc": {
+      "type": "-",
+      "size": 3771,
+      "lmtime": 0,
+      "modified": false
+    },
+    "srv": {
+      ".vscode": {},
+      "for_hyun.py": {
+        "type": "-",
+        "size": 3436,
+        "lmtime": 0,
+        "modified": false
+      },
+      "crawler.py": {
+        "type": "-",
+        "size": 3959,
+        "lmtime": 0,
+        "modified": false
+      },
+      "requirements.txt": {
+        "type": "-",
+        "size": 22,
+        "lmtime": 0,
+        "modified": false
+      },
+      "tset.c": {
+        "type": "-",
+        "size": 67,
+        "lmtime": 0,
+        "modified": false
+      },
+      "submain_res": {
+        "type": "-",
+        "size": 44662,
+        "lmtime": 0,
+        "modified": false
+      },
+      "test.py": {
+        "type": "-",
+        "size": 89,
+        "lmtime": 0,
+        "modified": false
+      },
+      ".git": {},
+      "reqres": {
+        "flow": {
+          "admin.py": {
+            "type": "-",
+            "size": 121,
+            "lmtime": 0,
+            "modified": false
+          },
+          "models.py": {
+            "type": "-",
+            "size": 518,
+            "lmtime": 0,
+            "modified": false
+          },
+          "__pycache__": {
+            "admin.cpython-36.pyc": {
+              "type": "-",
+              "size": 226,
+              "lmtime": 0,
+              "modified": false
+            },
+            "views.cpython-37.pyc": {
+              "type": "-",
+              "size": 7624,
+              "lmtime": 0,
+              "modified": false
+            },
+            "views.cpython-36.pyc": {
+              "type": "-",
+              "size": 7541,
+              "lmtime": 0,
+              "modified": false
+            },
+            "__init__.cpython-37.pyc": {
+              "type": "-",
+              "size": 136,
+              "lmtime": 0,
+              "modified": false
+            },
+            "models.cpython-37.pyc": {
+              "type": "-",
+              "size": 668,
+              "lmtime": 0,
+              "modified": false
+            },
+            "__init__.cpython-36.pyc": {
+              "type": "-",
+              "size": 111,
+              "lmtime": 0,
+              "modified": false
+            },
+            "models.cpython-36.pyc": {
+              "type": "-",
+              "size": 643,
+              "lmtime": 0,
+              "modified": false
+            },
+            "admin.cpython-37.pyc": {
+              "type": "-",
+              "size": 251,
+              "lmtime": 0,
+              "modified": false
+            }
+          },
+          "tests.py": {
+            "type": "-",
+            "size": 60,
+            "lmtime": 0,
+            "modified": false
+          },
+          "migrations": {
+            "0001_initial.py": {
+              "type": "-",
+              "size": 557,
+              "lmtime": 0,
+              "modified": false
+            },
+            "0004_auto_20181108_1916.py": {
+              "type": "-",
+              "size": 763,
+              "lmtime": 0,
+              "modified": false
+            },
+            "0003_auto_20181108_0741.py": {
+              "type": "-",
+              "size": 523,
+              "lmtime": 0,
+              "modified": false
+            },
+            "0007_auto_20181129_0234.py": {
+              "type": "-",
+              "size": 405,
+              "lmtime": 0,
+              "modified": false
+            },
+            "0002_auto_20181106_1836.py": {
+              "type": "-",
+              "size": 575,
+              "lmtime": 0,
+              "modified": false
+            },
+            "0005_userdata_recent_push.py": {
+              "type": "-",
+              "size": 401,
+              "lmtime": 0,
+              "modified": false
+            },
+            "0006_auto_20181129_0225.py": {
+              "type": "-",
+              "size": 584,
+              "lmtime": 0,
+              "modified": false
+            },
+            "__pycache__": {
+              "0004_auto_20181108_1916.cpython-37.pyc": {
+                "type": "-",
+                "size": 689,
+                "lmtime": 0,
+                "modified": false
+              },
+              "0007_auto_20181129_0234.cpython-36.pyc": {
+                "type": "-",
+                "size": 580,
+                "lmtime": 0,
+                "modified": false
+              },
+              "0002_auto_20181106_1836.cpython-36.pyc": {
+                "type": "-",
+                "size": 617,
+                "lmtime": 0,
+                "modified": false
+              },
+              "0006_auto_20181129_0225.cpython-37.pyc": {
+                "type": "-",
+                "size": 653,
+                "lmtime": 0,
+                "modified": false
+              },
+              "0007_auto_20181129_0234.cpython-37.pyc": {
+                "type": "-",
+                "size": 595,
+                "lmtime": 0,
+                "modified": false
+              },
+              "__init__.cpython-37.pyc": {
+                "type": "-",
+                "size": 147,
+                "lmtime": 0,
+                "modified": false
+              },
+              "0002_auto_20181106_1836.cpython-37.pyc": {
+                "type": "-",
+                "size": 632,
+                "lmtime": 0,
+                "modified": false
+              },
+              "0003_auto_20181108_0741.cpython-37.pyc": {
+                "type": "-",
+                "size": 590,
+                "lmtime": 0,
+                "modified": false
+              },
+              "0005_userdata_recent_push.cpython-36.pyc": {
+                "type": "-",
+                "size": 578,
+                "lmtime": 0,
+                "modified": false
+              },
+              "__init__.cpython-36.pyc": {
+                "type": "-",
+                "size": 122,
+                "lmtime": 0,
+                "modified": false
+              },
+              "0001_initial.cpython-36.pyc": {
+                "type": "-",
+                "size": 643,
+                "lmtime": 0,
+                "modified": false
+              },
+              "0003_auto_20181108_0741.cpython-36.pyc": {
+                "type": "-",
+                "size": 575,
+                "lmtime": 0,
+                "modified": false
+              },
+              "0004_auto_20181108_1916.cpython-36.pyc": {
+                "type": "-",
+                "size": 674,
+                "lmtime": 0,
+                "modified": false
+              },
+              "0005_userdata_recent_push.cpython-37.pyc": {
+                "type": "-",
+                "size": 593,
+                "lmtime": 0,
+                "modified": false
+              },
+              "0006_auto_20181129_0225.cpython-36.pyc": {
+                "type": "-",
+                "size": 638,
+                "lmtime": 0,
+                "modified": false
+              },
+              "0001_initial.cpython-37.pyc": {
+                "type": "-",
+                "size": 668,
+                "lmtime": 0,
+                "modified": false
+              }
+            },
+            "__init__.py": {
+              "type": "-",
+              "size": 0,
+              "lmtime": 0,
+              "modified": false
+            }
+          },
+          "views.py": {
+            "type": "-",
+            "size": 11673,
+            "lmtime": 1544041731308,
+            "modified": false
+          },
+          "__init__.py": {
+            "type": "-",
+            "size": 0,
+            "lmtime": 0,
+            "modified": false
+          },
+          "apps.py": {
+            "type": "-",
+            "size": 83,
+            "lmtime": 0,
+            "modified": false
+          }
+        },
+        "manage.py": {
+          "type": "-",
+          "size": 538,
+          "lmtime": 0,
+          "modified": false
+        },
+        "db.sqlite3": {
+          "type": "-",
+          "size": 143360,
+          "lmtime": 0,
+          "modified": false
+        },
+        "reqres": {
+          "urls.py": {
+            "type": "-",
+            "size": 1003,
+            "lmtime": 0,
+            "modified": false
+          },
+          "wsgi.py": {
+            "type": "-",
+            "size": 389,
+            "lmtime": 0,
+            "modified": false
+          },
+          "settings.py": {
+            "type": "-",
+            "size": 3232,
+            "lmtime": 0,
+            "modified": false
+          },
+          "__pycache__": {
+            "wsgi.cpython-37.pyc": {
+              "type": "-",
+              "size": 539,
+              "lmtime": 0,
+              "modified": false
+            },
+            "urls.cpython-36.pyc": {
+              "type": "-",
+              "size": 1056,
+              "lmtime": 0,
+              "modified": false
+            },
+            "urls.cpython-37.pyc": {
+              "type": "-",
+              "size": 1081,
+              "lmtime": 0,
+              "modified": false
+            },
+            "__init__.cpython-37.pyc": {
+              "type": "-",
+              "size": 138,
+              "lmtime": 0,
+              "modified": false
+            },
+            "settings.cpython-37.pyc": {
+              "type": "-",
+              "size": 2255,
+              "lmtime": 0,
+              "modified": false
+            },
+            "settings.cpython-36.pyc": {
+              "type": "-",
+              "size": 2230,
+              "lmtime": 0,
+              "modified": false
+            },
+            "__init__.cpython-36.pyc": {
+              "type": "-",
+              "size": 113,
+              "lmtime": 0,
+              "modified": false
+            },
+            "wsgi.cpython-36.pyc": {
+              "type": "-",
+              "size": 514,
+              "lmtime": 0,
+              "modified": false
+            }
+          },
+          "__init__.py": {
+            "type": "-",
+            "size": 0,
+            "lmtime": 0,
+            "modified": false
+          }
+        }
+      }
+    }
+  },
+  "$version": 1
+}

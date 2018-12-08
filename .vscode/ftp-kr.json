@@ -1,0 +1,17 @@
+{
+    "host": "ec2-52-78-239-241.ap-northeast-2.compute.amazonaws.com",
+    "username": "ubuntu",
+    "password": "zxcvb1@345",
+    "remotePath": "/srv/",
+    "protocol": "sftp",
+    "port": 22,
+    "fileNameEncoding": "utf8",
+    "privateKey": "C:/Users/hacke/Desktop/EC2-j0n9m1n1.pem",
+    "autoUpload": false,
+    "autoDelete": false,
+    "autoDownload": false,
+    "ignore": [
+        ".git",
+        "/.vscode"
+    ]
+}

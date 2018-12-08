@@ -25,4 +25,5 @@ urlpatterns = [
     path('login', views.login),
     path('get_report', views.get_report),
     path('get_recent_push', views.get_recent_push),
+    # path('ptest', views.ptest)
 ]

@@ -93,11 +93,9 @@ def login(request):
 def get_report(request):
 
 	start_time = time.time()
-	#status = 0 : app foregroud
-	#status = 1 : app backgroud
+	
 	lms_id = request.POST.get('lms_id', '')
 	lms_pw = request.POST.get('lms_pw', '')
-	status = request.POST.get('status', '')
 	
 	with requests.Session() as s:
 
@@ -214,11 +212,11 @@ def get_report(request):
 														    })
 			# print(json.dumps(dict_report, indent = 4, ensure_ascii=False))
 			print("(def get_report) done")
-			prepare_report(lms_id, dict_report, class_name, usr_class_length, status)
+			prepare_report(lms_id, dict_report, class_name, usr_class_length)
 			return JsonResponse(dict_report, safe = False, json_dumps_params = {'ensure_ascii': False})
 			
 @csrf_exempt
-def prepare_report(lms_id, dict_report, class_name, usr_class_length, status):
+def prepare_report(lms_id, dict_report, class_name, usr_class_length):
 	
 	list_new_subjects  = []
 	list_old_subjects  = []
@@ -278,17 +276,17 @@ def prepare_report(lms_id, dict_report, class_name, usr_class_length, status):
 		userdata.save(update_fields=['old_reports'])
 		userdata.save()
 		print("(def prepare_report)NULL SAVED old_reports")
-	
+
 	#NULL일때(첫 로그인시)는 list_diff_에 들어가지 않음
 	print("(def prepare_report")
 	if len(list_diff_subjects) > 0:
-		push_to_client(lms_id, list_diff_subjects, list_diff_reports, status)
+		push_to_client(lms_id, list_diff_subjects, list_diff_reports)
 
 	if len(list_diff_reports)  > 0:
-		push_to_client(lms_id, list_diff_subjects, list_diff_reports, status)
+		push_to_client(lms_id, list_diff_subjects, list_diff_reports)
 
 @csrf_exempt
-def push_to_client(lms_id, list_diff_subjects, list_diff_reports, status):
+def push_to_client(lms_id, list_diff_subjects, list_diff_reports):
 
 	userdata = UserData.objects.get(lms_id = lms_id)
 	token = userdata.device_token
@@ -301,8 +299,7 @@ def push_to_client(lms_id, list_diff_subjects, list_diff_reports, status):
         'Content-Type': 'application/json; UTF-8',
 	}
 
-	
-		# 한명 지정이면 to, 여럿일 경우 registration_ids[]
+	 # 한명 지정이면 to, 여럿일 경우 registration_ids[]
 	if len(list_diff_subjects) > 0:
 		for i in range(int(len(list_diff_subjects) / 2)):
 			list_recent_push = ast.literal_eval(userdata.recent_push)
@@ -314,7 +311,7 @@ def push_to_client(lms_id, list_diff_subjects, list_diff_reports, status):
 			userdata.save(update_fields=['recent_push'])
 			userdata.save()
 
-			content = {'to': token, 'data': { 'title': list_diff_subjects[i], 'body': list_diff_subjects[i+1]}}
+			content = {'to': token, 'notification': { 'title': list_diff_subjects[i], 'body': list_diff_subjects[i+1]}}
 			push_req = requests.post(url, data=json.dumps(content), headers=headers)
 
 	if len(list_diff_reports) > 0:
@@ -328,7 +325,7 @@ def push_to_client(lms_id, list_diff_subjects, list_diff_reports, status):
 			userdata.save(update_fields=['recent_push'])
 			userdata.save()
 			
-			content ={'to': token, 'data': { 'title': list_diff_reports[i], 'body': list_diff_reports[i+1]}}
+			content ={'to': token, 'notification': { 'title': list_diff_reports[i], 'body': list_diff_reports[i+1]}}
 			push_req = requests.post(url, data=json.dumps(content), headers=headers)
 
 @csrf_exempt
